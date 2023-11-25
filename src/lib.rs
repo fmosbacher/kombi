@@ -94,19 +94,24 @@ where
     }
 }
 
-pub struct LazyParser<T>(Box<dyn Fn() -> Box<dyn Parse<Item = T>>>);
+pub struct Lazy<F> {
+    parser_builder: F,
+}
 
-impl<T> Parse for LazyParser<T> {
-    type Item = T;
-
-    fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        (self.0)().parse(input)
+pub fn lazy<P, F>(parser_builder: F) -> Lazy<Box<dyn Fn() -> Box<dyn Parse<Item = P::Item>>>>
+where
+    F: Fn() -> P + 'static,
+    P: Parse + 'static,
+{
+    Lazy {
+        parser_builder: Box::new(move || Box::new(parser_builder())),
     }
 }
 
-pub fn lazy<F, T>(f: F) -> LazyParser<T>
-where
-    F: Fn() -> Box<dyn Parse<Item = T>> + 'static,
-{
-    LazyParser(Box::new(move || f()))
+impl<T> Parse for Lazy<Box<dyn Fn() -> Box<dyn Parse<Item = T>>>> {
+    type Item = T;
+
+    fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
+        (self.parser_builder)().parse(input)
+    }
 }

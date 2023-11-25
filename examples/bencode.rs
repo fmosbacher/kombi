@@ -51,9 +51,7 @@ fn b_dict() -> impl Parse<Item = Bencode> {
 }
 
 fn bencode() -> impl Parse<Item = Bencode> {
-    let lazy_b_list = lazy(|| Box::new(b_list()));
-    let lazy_b_dict = lazy(|| Box::new(b_dict()));
-    b_integer().or(b_string()).or(lazy_b_list).or(lazy_b_dict)
+    b_integer().or(b_string()).or(lazy(b_list)).or(lazy(b_dict))
 }
 
 impl TryFrom<&str> for Bencode {
