@@ -41,6 +41,7 @@ fn main() {
 ## Combinators
 
 - **`map`:** Transforms the result of a parser using a provided function.
+- **`and_then`:** Transforms the result of a parser using a provided function that returns an `Option`.
 - **`and`:** Combines two parsers, applying them sequentially.
 - **`or`:** Tries the first parser, and if it fails, tries the second one.
 - **`many` and `many1`:** Apply a parser zero or more times or one or more times, respectively.
