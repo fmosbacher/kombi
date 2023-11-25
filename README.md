@@ -53,10 +53,10 @@ fn main() {
 
 - **`item()`:** Parses a single character.
 - **`sat(predicate)`:** Parses a character satisfying a given predicate.
-- **`ch(search)`:** Parses a specific character.
+- **`ch(expected)`:** Parses a specific character.
 - **`digit()`:** Parses a digit character.
-- **`not(search)`:** Parses any character except the specified one.
-- **`literal(search)`:** Parses a literal string.
+- **`not(expected)`:** Parses any character except the specified one.
+- **`literal(expected)`:** Parses a literal string.
 - **`whitespace()`:** Parses whitespace characters (space, newline, tab).
 - **`lower()`:** Parses a lowercase letter.
 - **`upper()`:** Parses an uppercase letter.
