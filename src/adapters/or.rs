@@ -19,6 +19,6 @@ where
     type Item = T;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        self.parser.parse(input).or(self.next.parse(input))
+        self.parser.parse(input).or_else(|| self.next.parse(input))
     }
 }
