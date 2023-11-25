@@ -11,12 +11,12 @@ impl<P, Q> Or<P, Q> {
     }
 }
 
-impl<P, Q, T> Parse for Or<P, Q>
+impl<P, Q> Parse for Or<P, Q>
 where
-    P: Parse<Item = T>,
-    Q: Parse<Item = T>,
+    P: Parse,
+    Q: Parse<Item = P::Item>,
 {
-    type Item = T;
+    type Item = P::Item;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
         self.parser.parse(input).or_else(|| self.next.parse(input))
