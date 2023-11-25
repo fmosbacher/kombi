@@ -1,7 +1,7 @@
-mod adapters;
+mod combinators;
 mod parsers;
 
-use adapters::*;
+use combinators::*;
 pub use parsers::*;
 
 pub trait Parse {
