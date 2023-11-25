@@ -11,22 +11,22 @@ where
     item().and_then(move |first| if predicate(first) { Some(first) } else { None })
 }
 
-pub fn ch(search: char) -> impl Parse<Item = char> {
-    sat(move |first| first == search)
+pub fn ch(expected: char) -> impl Parse<Item = char> {
+    sat(move |first| first == expected)
 }
 
 pub fn digit() -> impl Parse<Item = char> {
     sat(|first| ('0'..='9').contains(&first))
 }
 
-pub fn not(search: char) -> impl Parse<Item = char> {
-    sat(move |first| first != search)
+pub fn not(expected: char) -> impl Parse<Item = char> {
+    sat(move |first| first != expected)
 }
 
-pub fn literal(search: &str) -> impl Parse<Item = &str> {
+pub fn literal(expected: &str) -> impl Parse<Item = &str> {
     Parser::new(move |input| {
-        if input.starts_with(search) {
-            Some((search, &input[search.len()..]))
+        if input.starts_with(expected) {
+            Some((expected, &input[expected.len()..]))
         } else {
             None
         }
