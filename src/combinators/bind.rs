@@ -20,9 +20,8 @@ where
     type Item = U;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        self.parser.parse(input).and_then(|(parsed, rest)| {
-            let q = (self.bind_fn)(parsed);
-            q.parse(rest).map(|(parsed, rest)| (parsed, rest))
-        })
+        self.parser
+            .parse(input)
+            .and_then(|(parsed, rest)| (self.bind_fn)(parsed).parse(rest))
     }
 }
