@@ -12,16 +12,20 @@ enum Bencode {
 
 fn b_integer() -> impl Parse<Item = Bencode> {
     ch('i')
-        .and(integer())
-        .and(ch('e'))
-        .map(|((_, int), _)| Bencode::Integer(int))
+        .skip_and(integer())
+        .and_skip(ch('e'))
+        .map(Bencode::Integer)
 }
 
 fn b_string() -> impl Parse<Item = Bencode> {
     integer()
-        .and(ch(':'))
-        .bind(|(n, _)| item().take(n as usize))
-        .map(|chars| Bencode::String(chars.iter().collect::<String>()))
+        .and_skip(ch(':'))
+        .bind(|n| {
+            item()
+                .take(n as usize)
+                .map(|chars| chars.iter().collect::<String>())
+        })
+        .map(Bencode::String)
 }
 
 fn b_list() -> impl Parse<Item = Bencode> {
@@ -33,17 +37,18 @@ fn b_list() -> impl Parse<Item = Bencode> {
 
 fn b_dict() -> impl Parse<Item = Bencode> {
     ch('d')
-        .and(b_string().and(bencode()).many())
-        .and(ch('e'))
-        .map(|((_, codes), _)| {
+        .skip_and(b_string().and(bencode()).many())
+        .and_skip(ch('e'))
+        .map(|kv_pairs| {
             let mut hashmap = HashMap::new();
 
-            codes.into_iter().for_each(|(key, code)| {
+            kv_pairs.into_iter().for_each(|(key, value)| {
                 let key = match &key {
                     Bencode::String(k) => k.clone(),
                     _ => unreachable!(),
                 };
-                hashmap.insert(key, code);
+
+                hashmap.insert(key, value);
             });
 
             Bencode::Dictionary(hashmap)

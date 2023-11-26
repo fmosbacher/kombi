@@ -17,7 +17,7 @@ struct Color {
 fn hex_parser() -> impl Parse<Item = Color> {
     // Start searching for the `#`
     ch('#')
-        .and(
+        .skip_and(
             // Search for 2 consecutive alphanum chars and parse them into a u8 number
             alphanum()
                 .take(2)
@@ -28,7 +28,7 @@ fn hex_parser() -> impl Parse<Item = Color> {
                 .take(3),
         )
         // Ignore the `#` and use the list of 3 numbers to build the Color type
-        .map(|(_, components)| Color {
+        .map(|components| Color {
             red: components[0],
             green: components[1],
             blue: components[2],
