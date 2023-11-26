@@ -70,6 +70,22 @@ pub trait Parse {
     {
         Take::new(self, n)
     }
+
+    fn and_skip<P>(self, next: P) -> AndSkip<Self, P>
+    where
+        Self: Sized,
+        P: Parse,
+    {
+        AndSkip::new(self, next)
+    }
+
+    fn skip_and<P>(self, next: P) -> SkipAnd<Self, P>
+    where
+        Self: Sized,
+        P: Parse,
+    {
+        SkipAnd::new(self, next)
+    }
 }
 
 pub struct Parser<F>(F);
