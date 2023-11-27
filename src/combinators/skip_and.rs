@@ -1,5 +1,6 @@
 use crate::Parse;
 
+#[derive(Copy, Clone)]
 pub struct SkipAnd<P, Q> {
     parser: P,
     next: Q,

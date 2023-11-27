@@ -1,5 +1,6 @@
 use crate::Parse;
 
+#[derive(Copy, Clone)]
 pub struct Bind<P, F> {
     parser: P,
     bind_fn: F,

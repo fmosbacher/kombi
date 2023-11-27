@@ -88,6 +88,7 @@ pub trait Parse {
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct Parser<F>(F);
 
 impl<F, T> Parser<F>

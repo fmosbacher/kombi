@@ -1,5 +1,6 @@
 use crate::Parse;
 
+#[derive(Copy, Clone)]
 pub struct Map<P, F> {
     parser: P,
     map_fn: F,

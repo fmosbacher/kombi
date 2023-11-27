@@ -1,5 +1,6 @@
 use crate::Parse;
 
+#[derive(Copy, Clone)]
 pub struct AndThen<P, F> {
     parser: P,
     and_then_fn: F,
