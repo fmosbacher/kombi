@@ -28,17 +28,21 @@ fn hex_parser() -> impl Parse<Item = Color> {
                 .take(3),
         )
         // Ignore the `#` and use the list of 3 numbers to build the Color type
-        .map(|components| Color {
-            red: components[0],
-            green: components[1],
-            blue: components[2],
+        .and_then(|components| {
+            let mut components = components.iter();
+            let (Some(&red), Some(&green), Some(&blue)) =
+                (components.next(), components.next(), components.next())
+            else {
+                return None;
+            };
+            Some(Color { red, green, blue })
         })
 }
 
 fn main() {
     let (result, remaining) = hex_parser().parse("#6366F1").unwrap();
-    println!("Result: {:?}", result);
-    println!("Remaining input: {:?}", remaining);
+    println!("Result: {:?}", result); // Result: Color { red: 99, green: 102, blue: 241 }
+    println!("Remaining input: {:?}", remaining); // Remaining input: ""
 }
 ```
 
