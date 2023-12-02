@@ -55,8 +55,15 @@ fn b_dict() -> impl Parse<Item = Bencode> {
         })
 }
 
-fn bencode() -> impl Parse<Item = Bencode> {
-    b_integer().or(b_string()).or(lazy(b_list)).or(lazy(b_dict))
+// Can't return opaque type here since it's a recursive parser
+fn bencode() -> Parser<impl Fn(&str) -> Option<(Bencode, &str)>> {
+    Parser::new(|input| {
+        b_integer()
+            .or(b_string())
+            .or(b_list())
+            .or(b_dict())
+            .parse(input)
+    })
 }
 
 impl TryFrom<&str> for Bencode {
