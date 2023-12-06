@@ -4,7 +4,7 @@ mod parsers;
 use combinators::*;
 pub use parsers::*;
 
-pub trait Parse {
+pub trait Parse: Sized {
     type Item;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)>;
@@ -12,7 +12,6 @@ pub trait Parse {
     fn map<F, T>(self, map_fn: F) -> Map<Self, F>
     where
         F: Fn(Self::Item) -> T,
-        Self: Sized,
     {
         Map::new(self, map_fn)
     }
@@ -20,7 +19,6 @@ pub trait Parse {
     fn and<P>(self, next: P) -> And<Self, P>
     where
         P: Parse,
-        Self: Sized,
     {
         And::new(self, next)
     }
@@ -28,7 +26,6 @@ pub trait Parse {
     fn and_then<F, T>(self, map_fn: F) -> AndThen<Self, F>
     where
         F: Fn(Self::Item) -> Option<T>,
-        Self: Sized,
     {
         AndThen::new(self, map_fn)
     }
@@ -36,22 +33,15 @@ pub trait Parse {
     fn or<P>(self, next: P) -> Or<Self, P>
     where
         P: Parse,
-        Self: Sized,
     {
         Or::new(self, next)
     }
 
-    fn many(self) -> Many<Self>
-    where
-        Self: Sized,
-    {
+    fn many(self) -> Many<Self> {
         Many::new(self)
     }
 
-    fn many1(self) -> Many1<Self>
-    where
-        Self: Sized,
-    {
+    fn many1(self) -> Many1<Self> {
         Many1::new(self)
     }
 
@@ -59,21 +49,16 @@ pub trait Parse {
     where
         F: Fn(Self::Item) -> P,
         P: Parse,
-        Self: Sized,
     {
         Bind::new(self, bind_fn)
     }
 
-    fn take(self, n: usize) -> Take<Self>
-    where
-        Self: Sized,
-    {
+    fn take(self, n: usize) -> Take<Self> {
         Take::new(self, n)
     }
 
     fn and_skip<P>(self, next: P) -> AndSkip<Self, P>
     where
-        Self: Sized,
         P: Parse,
     {
         AndSkip::new(self, next)
@@ -81,7 +66,6 @@ pub trait Parse {
 
     fn skip_and<P>(self, next: P) -> SkipAnd<Self, P>
     where
-        Self: Sized,
         P: Parse,
     {
         SkipAnd::new(self, next)
