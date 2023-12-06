@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 
-use kombi::*;
+use kombi::{
+    character::{any, char},
+    number::integer,
+    Parse, Parser,
+};
 
 #[derive(Debug, Clone)]
 enum Bencode {
@@ -11,17 +15,17 @@ enum Bencode {
 }
 
 fn b_integer() -> impl Parse<Item = Bencode> {
-    ch('i')
+    char('i')
         .skip_and(integer())
-        .and_skip(ch('e'))
+        .and_skip(char('e'))
         .map(Bencode::Integer)
 }
 
 fn b_string() -> impl Parse<Item = Bencode> {
     integer()
-        .and_skip(ch(':'))
+        .and_skip(char(':'))
         .bind(|n| {
-            item()
+            any()
                 .take(n as usize)
                 .map(|chars| chars.iter().collect::<String>())
         })
@@ -29,16 +33,16 @@ fn b_string() -> impl Parse<Item = Bencode> {
 }
 
 fn b_list() -> impl Parse<Item = Bencode> {
-    ch('l')
+    char('l')
         .and(bencode().many())
-        .and(ch('e'))
+        .and(char('e'))
         .map(|((_, list), _)| Bencode::List(list))
 }
 
 fn b_dict() -> impl Parse<Item = Bencode> {
-    ch('d')
+    char('d')
         .skip_and(b_string().and(bencode()).many())
-        .and_skip(ch('e'))
+        .and_skip(char('e'))
         .map(|kv_pairs| {
             let mut hashmap = HashMap::new();
 

@@ -3,12 +3,12 @@ use crate::Parse;
 #[derive(Copy, Clone)]
 pub struct Or<P, Q> {
     parser: P,
-    next: Q,
+    other: Q,
 }
 
 impl<P, Q> Or<P, Q> {
-    pub fn new(parser: P, next: Q) -> Self {
-        Self { parser, next }
+    pub fn new(parser: P, other: Q) -> Self {
+        Self { parser, other }
     }
 }
 
@@ -20,6 +20,6 @@ where
     type Item = P::Item;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        self.parser.parse(input).or_else(|| self.next.parse(input))
+        self.parser.parse(input).or_else(|| self.other.parse(input))
     }
 }

@@ -1,8 +1,15 @@
-mod combinators;
-mod parsers;
+mod branch;
+pub mod bytes;
+pub mod character;
+mod multi;
+pub mod number;
+mod sequence;
+mod transform;
 
-use combinators::*;
-pub use parsers::*;
+use branch::Or;
+use multi::{Many, Many1, Take};
+use sequence::{And, AndSkip, SkipAnd};
+use transform::{AndThen, Bind, Map};
 
 pub trait Parse: Sized {
     type Item;
