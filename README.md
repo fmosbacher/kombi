@@ -60,7 +60,7 @@ fn main() {
 - **`satisfy(predicate)`:** Parses a character satisfying a given predicate.
 - **`char(expected)`:** Parses a specific character.
 - **`digit()`:** Parses a digit character.
-- **`not(expected)`:** Parses any character except the specified one.
+- **`not(unexpected)`:** Parses any character except the specified one.
 - **`literal(expected)`:** Parses a literal string.
 - **`whitespace()`:** Parses whitespace characters (space, newline, tab).
 - **`lower()`:** Parses a lowercase letter.

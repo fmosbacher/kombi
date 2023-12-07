@@ -19,8 +19,8 @@ pub fn digit() -> impl Parse<Item = char> + Copy {
     satisfy(|first| ('0'..='9').contains(&first))
 }
 
-pub fn not(expected: char) -> impl Parse<Item = char> + Copy {
-    satisfy(move |first| first != expected)
+pub fn not(unexpected: char) -> impl Parse<Item = char> + Copy {
+    satisfy(move |first| first != unexpected)
 }
 
 pub fn whitespace() -> impl Parse<Item = char> + Copy + Copy {
