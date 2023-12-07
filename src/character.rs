@@ -16,7 +16,7 @@ pub fn char(expected: char) -> impl Parse<Item = char> + Copy {
 }
 
 pub fn digit() -> impl Parse<Item = char> + Copy {
-    satisfy(|first| ('0'..='9').contains(&first))
+    satisfy(|first| first.is_digit(10))
 }
 
 pub fn not(unexpected: char) -> impl Parse<Item = char> + Copy {

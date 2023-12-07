@@ -1,11 +1,14 @@
 use crate::Parse;
 
 #[derive(Copy, Clone)]
-pub struct Map<P, F>(P, F);
+pub struct Map<P, F> {
+    parser: P,
+    map_fn: F,
+}
 
 impl<P, F> Map<P, F> {
     pub fn new(parser: P, map_fn: F) -> Self {
-        Self(parser, map_fn)
+        Self { parser, map_fn }
     }
 }
 
@@ -17,18 +20,24 @@ where
     type Item = U;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        self.0
+        self.parser
             .parse(input)
-            .map(|(parsed, rest)| ((self.1)(parsed), rest))
+            .map(|(parsed, rest)| ((self.map_fn)(parsed), rest))
     }
 }
 
 #[derive(Copy, Clone)]
-pub struct AndThen<P, F>(P, F);
+pub struct AndThen<P, F> {
+    parser: P,
+    and_then_fn: F,
+}
 
 impl<P, F> AndThen<P, F> {
     pub fn new(parser: P, and_then_fn: F) -> Self {
-        Self(parser, and_then_fn)
+        Self {
+            parser,
+            and_then_fn,
+        }
     }
 }
 
@@ -40,18 +49,21 @@ where
     type Item = U;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        self.0
+        self.parser
             .parse(input)
-            .and_then(|(parsed, rest)| (self.1)(parsed).map(|mapped| (mapped, rest)))
+            .and_then(|(parsed, rest)| (self.and_then_fn)(parsed).map(|mapped| (mapped, rest)))
     }
 }
 
 #[derive(Copy, Clone)]
-pub struct Bind<P, F>(P, F);
+pub struct Bind<P, F> {
+    parser: P,
+    bind_fn: F,
+}
 
 impl<P, F> Bind<P, F> {
     pub fn new(parser: P, bind_fn: F) -> Self {
-        Self(parser, bind_fn)
+        Self { parser, bind_fn }
     }
 }
 
@@ -64,8 +76,8 @@ where
     type Item = U;
 
     fn parse<'a>(&self, input: &'a str) -> Option<(Self::Item, &'a str)> {
-        self.0
+        self.parser
             .parse(input)
-            .and_then(|(parsed, rest)| (self.1)(parsed).parse(rest))
+            .and_then(|(parsed, rest)| (self.bind_fn)(parsed).parse(rest))
     }
 }
